@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-statefulset
+  namespace: {{ .Values.namespace }}
+spec:
+  serviceName: "{{ .Release.Name }}-headless"
+  replicas: {{ .Values.statefulset.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-statefulset
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-statefulset
+    spec:
+      serviceAccountName: {{ include "krr-chart.serviceAccountName" . }}
+      containers:
+      - name: {{ .Values.statefulset.container.name }}
+        image: {{ .Values.statefulset.container.image }}
+        ports:
+        - containerPort: {{ .Values.statefulset.container.port }}

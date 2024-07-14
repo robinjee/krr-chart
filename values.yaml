@@ -1,0 +1,82 @@
+kind: StatefulSet
+replicaCount: 1
+namespace: krr
+rbac:
+  create: true
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+statefulset:
+  replicas: 1
+  container:
+    name: nginx
+    image: nginx:stable
+    port: 80
+
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+
+
+resources: {}
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 2
+  targetCPUUtilizationPercentage: 80
+
+volumes:
+  - name: krr
+    persistentVolumeClaim:
+      claimName: data-pvc
+
+volumeMounts:
+  - name: krr
+    mountPath: "/etc/krr"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
